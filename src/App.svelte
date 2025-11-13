@@ -303,7 +303,8 @@
           
           <div class="contact-grid">
             <div class="contact-item">
-              <span class="contact-icon">📧</span>
+              <span class="contact-icon">329
+</span>
               <div>
                 <p class="contact-label">Email</p>
                 <a href="mailto:tbchappell803@gmail.com" class="contact-link">tbchappell803@gmail.com</a>
@@ -323,15 +324,15 @@
               <div>
                 <p class="contact-label">LinkedIn</p>
                 <a href="https://www.linkedin.com/in/timothy-chappell-bb311b390" target="_blank" class="contact-link">timothy-chappell-bb311b390</a>
-              </div>
-            </div>
+      
 
-            <div class="contact-item">
-              <span class="contact-icon">💻</span>
-              <div>
-              </a>
-              </div>
-            </div>
+      <div class="contact-item">   <span class="contact-icon">📧</span></div>
+</span>
+        <div>
+          <p class="contact-label">Email</p>
+          <a href="mailto:tbchappell803@gmail.com" class="contact-link">tbchappell803@gmail.com</a>
+        </div>
+      </div>>
           </div>
 
           <div class="availability">
