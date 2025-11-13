@@ -4,8 +4,8 @@
 
   let canvas;
   let ctx;
-  let leftHalf;
-  let rightHalf;
+  let leftHalf = null;
+  let rightHalf = null;
   let isOpened = false;
   let animationId;
   let particles = [];
@@ -14,39 +14,43 @@
   // Resume tabs
   let activeTab = 'profile';
   const tabs = [
-    { id: 'profile', label: 'Neural Profile', icon: '⚡' },
-    { id: 'experience', label: 'Training Data', icon: '🧠' },
-    { id: 'skills', label: 'Model Architecture', icon: '💻' },
-    { id: 'projects', label: 'Deployment History', icon: '🚀' },
-    { id: 'contact', label: 'Contact Protocol', icon: '📡' }
+    { id: 'profile', label: 'Neural Profile', icon: 'Lightning' },
+    { id: 'experience', label: 'Training Data', icon: 'Brain' },
+    { id: 'skills', label: 'Model Architecture', icon: 'Laptop' },
+    { id: 'projects', label: 'Deployment History', icon: 'Rocket' },
+    { id: 'contact', label: 'Contact Protocol', icon: 'Satellite' }
   ];
 
   onMount(() => {
     canvas = document.getElementById('bg-canvas');
     ctx = canvas.getContext('2d');
     resize();
+    window.addEventListener('resize', resize);
     animate();
 
-    gsap.to([leftHalf, rightHalf], {
-      x: () => Math.random() * 6 - 3,
-      y: () => Math.random() * 6 - 3,
-      duration: 0.1,
-      repeat: -1,
-      yoyo: true,
-      ease: "none"
-    });
-
-    gsap.to([leftHalf, rightHalf], {
-      textShadow: "0 0 60px #00ffff, 0 0 100px #00ffff",
-      duration: 1.2,
-      repeat: -1,
-      yoyo: true,
-      ease: "power2.inOut"
-    });
+    // Subtle hover wiggle
+    if (leftHalf && rightHalf) {
+      gsap.to([leftHalf, rightHalf], {
+        x: () => Math.random() * 6 - 3,
+        y: () => Math.random() * 6 - 3,
+        duration: 0.1,
+        repeat: -1,
+        yoyo: true,
+        ease: "none"
+      });
+      gsap.to([leftHalf, rightHalf], {
+        textShadow: "0 0 60px #00ffff, 0 0 100px #00ffff",
+        duration: 1.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "power2.inOut"
+      });
+    }
   });
 
   onDestroy(() => {
     if (animationId) cancelAnimationFrame(animationId);
+    window.removeEventListener('resize', resize);
   });
 
   function resize() {
@@ -87,6 +91,20 @@
     if (isOpened) return;
     isOpened = true;
 
+    // Create particle burst
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x: width / 2,
+        y: height / 2,
+        vx: (Math.random() - 0.5) * 10,
+        vy: (Math.random() - 0.5) * 10,
+        size: Math.random() * 4 + 2,
+        color: `hsl(${180 + Math.random() * 60}, 100%, 70%)`,
+        life: 1,
+        decay: 0.015 + Math.random() * 0.01
+      });
+    }
+
     gsap.killTweensOf([leftHalf, rightHalf]);
 
     const light = document.createElement('div');
@@ -109,12 +127,12 @@
     gsap.to(rightHalf, { x: width * 0.6, duration: 1.2, ease: "power2.inOut" });
 
     setTimeout(() => {
-      gsap.fromTo(".title", 
-        { scale: 0.5, opacity: 0, rotation: -15 }, 
+      gsap.fromTo(".title",
+        { scale: 0.5, opacity: 0, rotation: -15 },
         { scale: 1, opacity: 1, rotation: 0, duration: 1.2, ease: "elastic.out(1, 0.3)" }
       );
-      gsap.fromTo(".tab-content", 
-        { opacity: 0, y: 30 }, 
+      gsap.fromTo(".tab-content",
+        { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }
       );
     }, 800);
@@ -131,13 +149,13 @@
     if (activeTab === tabId) return;
     const oldContent = document.querySelector(`#${activeTab}`);
     const newContent = document.querySelector(`#${tabId}`);
-    
+
     gsap.to(oldContent, { x: -100, opacity: 0, duration: 0.4, ease: "power2.in" });
-    gsap.fromTo(newContent, 
-      { x: 100, opacity: 0 }, 
+    gsap.fromTo(newContent,
+      { x: 100, opacity: 0 },
       { x: 0, opacity: 1, duration: 0.4, ease: "power2.out", delay: 0.2 }
     );
-    
+
     activeTab = tabId;
   }
 </script>
@@ -148,21 +166,21 @@
   {#if !isOpened}
     <div class="glyph-container">
       <div bind:this={leftHalf} class="glyph-half left" on:click={openGlyph}>
-        ⚡⊰ΨΩ
+        Lightning⊰ΨΩ
       </div>
       <div bind:this={rightHalf} class="glyph-half right" on:click={openGlyph}>
-        ≋⊱⚡
+        ≋⊱Lightning
       </div>
     </div>
   {:else}
     <div class="content-wrapper">
       <h1 class="title">TIMOTHY CHAPPELL • AI ENGINEER</h1>
-      
+
       <!-- TABS -->
       <div class="tabs">
         {#each tabs as tab}
-          <button 
-            class="tab-btn" 
+          <button
+            class="tab-btn"
             class:active={activeTab === tab.id}
             on:click={() => switchTab(tab.id)}
           >
@@ -174,13 +192,11 @@
       <!-- NEURAL PROFILE -->
       <div class="tab-content" id="profile" style="display: {activeTab === 'profile' ? 'block' : 'none'}">
         <section class="resume-section">
-          <h2>⚡ NEURAL PROFILE</h2>
+          <h2>Lightning NEURAL PROFILE</h2>
           <p class="intro">AI Prompt Engineer & Creative Technologist specializing in generative systems, music production AI, and multi-model optimization. 3+ years architecting prompts across GPT, Mistral, Grok, DeepSeek, and OpenRouter platforms.</p>
-          
           <div class="highlight-box">
             <p><strong>Core Competency:</strong> Translating creative vision into precise AI instructions that generate professional-grade outputs across audio, visual, and text domains.</p>
           </div>
-
           <p class="tagline">"Building the bridge between human creativity and machine intelligence."</p>
         </section>
       </div>
@@ -188,8 +204,7 @@
       <!-- TRAINING DATA -->
       <div class="tab-content" id="experience" style="display: {activeTab === 'experience' ? 'block' : 'none'}">
         <section class="resume-section">
-          <h2>🧠 TRAINING DATA</h2>
-          
+          <h2>Brain TRAINING DATA</h2>
           <div class="experience-item">
             <h3>AI Prompt Engineer (Independent)</h3>
             <p class="date">2021 - Present</p>
@@ -200,7 +215,6 @@
               <li>Created production-ready outputs across multiple domains: music, copywriting, visual art direction, and technical documentation</li>
             </ul>
           </div>
-
           <div class="experience-item">
             <h3>Music Producer & Audio Engineer</h3>
             <p class="date">2018 - Present</p>
@@ -211,7 +225,6 @@
               <li>Published music across streaming platforms with professional artwork and branding</li>
             </ul>
           </div>
-
           <div class="experience-item">
             <h3>Creative Technologist</h3>
             <p class="date">2020 - Present</p>
@@ -227,8 +240,7 @@
       <!-- MODEL ARCHITECTURE -->
       <div class="tab-content" id="skills" style="display: {activeTab === 'skills' ? 'block' : 'none'}">
         <section class="resume-section">
-          <h2>💻 MODEL ARCHITECTURE</h2>
-          
+          <h2>Laptop MODEL ARCHITECTURE</h2>
           <div class="skills-grid">
             <div class="skill-category">
               <h3>AI Platforms</h3>
@@ -241,7 +253,6 @@
                 <li>Midjourney</li>
               </ul>
             </div>
-
             <div class="skill-category">
               <h3>Technical Skills</h3>
               <ul class="skill-list">
@@ -254,7 +265,6 @@
                 <li>Web Deployment (Vercel, Netlify)</li>
               </ul>
             </div>
-
             <div class="skill-category">
               <h3>Creative Expertise</h3>
               <ul class="skill-list">
@@ -272,23 +282,19 @@
       <!-- DEPLOYMENT HISTORY -->
       <div class="tab-content" id="projects" style="display: {activeTab === 'projects' ? 'block' : 'none'}">
         <section class="resume-section">
-          <h2>🚀 DEPLOYMENT HISTORY</h2>
-          
+          <h2>Rocket DEPLOYMENT HISTORY</h2>
           <div class="project-item">
             <h3>Suno AI Music Production System</h3>
             <p>Developed comprehensive prompting methodology for generating professional-quality music across genres. Mastered techniques for style fusion, tonal control, and lyrical coherence that consistently produce release-ready tracks.</p>
           </div>
-
           <div class="project-item">
             <h3>Multi-Model AI Workflow</h3>
             <p>Created integrated workflows leveraging strengths of multiple AI platforms simultaneously - using GPT for lyrical generation, Suno for audio, Midjourney for artwork, and BandLab for final mastering.</p>
           </div>
-
           <div class="project-item">
             <h3>Digital Product Creation</h3>
             <p>Designed and published custom stickers, templates, and visual assets. Managed full pipeline from concept to marketplace deployment.</p>
           </div>
-
           <div class="project-item">
             <h3>Web Development Projects</h3>
             <p>Built and deployed websites using GitHub, Vercel, and modern web frameworks. This resume site is a live example of cyberpunk-themed web design with GSAP animations.</p>
@@ -299,51 +305,41 @@
       <!-- CONTACT PROTOCOL -->
       <div class="tab-content" id="contact" style="display: {activeTab === 'contact' ? 'block' : 'none'}">
         <section class="resume-section contact-section">
-          <h2>📡 CONTACT PROTOCOL</h2>
-          
+          <h2>Satellite CONTACT PROTOCOL</h2>
           <div class="contact-grid">
             <div class="contact-item">
-              <span class="contact-icon">329
-</span>
+              <span class="contact-icon">Email</span>
               <div>
                 <p class="contact-label">Email</p>
                 <a href="mailto:tbchappell803@gmail.com" class="contact-link">tbchappell803@gmail.com</a>
               </div>
             </div>
-
             <div class="contact-item">
-              <span class="contact-icon">📱</span>
+              <span class="contact-icon">Phone</span>
               <div>
                 <p class="contact-label">Phone</p>
                 <a href="tel:8033314504" class="contact-link">803-331-4504</a>
               </div>
             </div>
-
             <div class="contact-item">
-              <span class="contact-icon">💼</span>
+              <span class="contact-icon">Briefcase</span>
               <div>
                 <p class="contact-label">LinkedIn</p>
-                <a href="https://www.linkedin.com/in/timothy-chappell-bb311b390" target="_blank" class="contact-link">timothy-chappell-bb311b390</a>
-      
-
-      <div class="contact-item">   <span class="contact-icon">📧</span></div>
-</span>
-        <div>
-          <p class="contact-label">Email</p>
-          <a href="mailto:tbchappell803@gmail.com" class="contact-link">tbchappell803@gmail.com</a>
-        </div>
-      </div>>
+                <a href="https://www.linkedin.com/in/timothy-chappell-bb311b390" target="_blank" class="contact-link">
+                  timothy-chappell-bb311b390
+                </a>
+              </div>
+            </div>
           </div>
-
           <div class="availability">
-            <p><strong>🌐 Remote Work:</strong> Available for remote opportunities worldwide</p>
-            <p><strong>⏰ Availability:</strong> Immediate start</p>
+            <p><strong>Globe Remote Work:</strong> Available for remote opportunities worldwide</p>
+            <p><strong>Clock Availability:</strong> Immediate start</p>
           </div>
         </section>
       </div>
 
       <div class="footer-glyph" on:click={resetRitual}>
-        ⚡⊰ΨΩ≋⊱⚡ 
+        Lightning⊰ΨΩ≋⊱Lightning
         <small>Reset Portal</small>
       </div>
     </div>
@@ -353,109 +349,109 @@
 <style>
   :global(body) { margin: 0; background: #000; font-family: 'Courier New', monospace; color: #00ffff; }
   main { position: relative; min-height: 100vh; overflow-y: auto; z-index: 2; }
-  
+
   .glyph-container {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
     display: flex; font-size: 8rem; cursor: pointer; user-select: none; z-index: 100;
   }
-  
+
   .glyph-half {
     color: #00ffff;
     text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff;
   }
-  
+
   .left { margin-right: -1rem; }
   .right { margin-left: -1rem; }
-  
+
   .content-wrapper { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
   .title { font-size: 2.2rem; text-align: center; margin-bottom: 2rem; letter-spacing: 0.3rem; text-shadow: 0 0 20px #00ffff; }
-  
+
   .tabs {
     display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin: 2rem 0;
   }
-  
+
   .tab-btn {
     background: none; border: 1px solid #00ffff; color: #00ffff; padding: 0.8rem 1.2rem;
     font-family: 'Courier New'; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
     transition: all 0.3s ease;
   }
-  
+
   .tab-btn:hover { background: rgba(0,255,255,0.1); }
   .tab-btn.active { background: #00ffff; color: #000; }
-  
+
   .tab-content { display: none; }
-  
-  .resume-section { 
-    margin: 2rem 0; padding: 2rem; border: 2px solid #00ffff; border-radius: 10px; 
-    background: rgba(0,255,255,0.05); 
+
+  .resume-section {
+    margin: 2rem 0; padding: 2rem; border: 2px solid #00ffff; border-radius: 10px;
+    background: rgba(0,255,255,0.05);
   }
-  
+
   .resume-section h2 { font-size: 1.8rem; text-align: center; margin-bottom: 1.5rem; color: #00ffff; text-shadow: 0 0 15px #00ffff; }
-  
+
   .intro { font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem; }
-  
-  .highlight-box { 
-    background: rgba(0,255,255,0.1); border-left: 4px solid #00ffff; 
-    padding: 1rem; margin: 1.5rem 0; 
+
+  .highlight-box {
+    background: rgba(0,255,255,0.1); border-left: 4px solid #00ffff;
+    padding: 1rem; margin: 1.5rem 0;
   }
-  
+
   .tagline { text-align: center; font-style: italic; color: #0ff; margin-top: 1.5rem; font-size: 1.1rem; }
-  
-  .experience-item { 
-    margin: 2rem 0; padding: 1.5rem; background: rgba(0,255,255,0.03); 
-    border-left: 3px solid #00ffff; 
+
+  .experience-item {
+    margin: 2rem 0; padding: 1.5rem; background: rgba(0,255,255,0.03);
+    border-left: 3px solid #00ffff;
   }
-  
+
   .experience-item h3 { color: #00ffff; margin-bottom: 0.5rem; }
   .date { color: #0ff; font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.8; }
-  
+
   .experience-item ul { margin-left: 1.5rem; }
   .experience-item li { margin: 0.8rem 0; line-height: 1.6; }
-  
+
   .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
-  
+
   .skill-category h3 { color: #00ffff; margin-bottom: 1rem; border-bottom: 2px solid #00ffff; padding-bottom: 0.5rem; }
-  
+
   .skill-list { list-style: none; padding: 0; }
-  .skill-list li { 
-    padding: 0.5rem 0; padding-left: 1.5rem; 
+  .skill-list li {
+    padding: 0.5rem 0; padding-left: 1.5rem;
     position: relative;
   }
-  .skill-list li:before { content: "▸"; position: absolute; left: 0; color: #00ffff; }
-  
-  .project-item { 
-    margin: 1.5rem 0; padding: 1.5rem; background: rgba(0,255,255,0.05); 
-    border: 1px solid #00ffff; border-radius: 5px; 
+  .skill-list li:before { content: "Arrow Right"; position: absolute; left: 0; color: #00ffff; }
+
+  .project-item {
+    margin: 1.5rem 0; padding: 1.5rem; background: rgba(0,255,255,0.05);
+    border: 1px solid #00ffff; border-radius: 5px;
   }
-  
+
   .project-item h3 { color: #00ffff; margin-bottom: 0.8rem; }
-  
+
   .contact-section { text-align: center; }
-  
+
   .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 2rem 0; text-align: left; }
-  
-  .contact-item { 
-    display: flex; align-items: center; gap: 1rem; 
-    padding: 1rem; background: rgba(0,255,255,0.05); 
-    border: 1px solid #00ffff; border-radius: 5px; 
+
+  .contact-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem; background: rgba(0,255,255,0.05);
+    border: 1px solid #00ffff; border-radius: 5px;
   }
-  
+
   .contact-icon { font-size: 2rem; }
   .contact-label { font-size: 0.9rem; color: #0ff; opacity: 0.8; margin-bottom: 0.3rem; }
   .contact-link { color: #00ffff; text-decoration: none; font-weight: bold; }
   .contact-link:hover { text-decoration: underline; }
-  
-  .availability { 
-    margin-top: 2rem; padding: 1.5rem; background: rgba(0,255,255,0.1); 
-    border: 2px solid #00ffff; border-radius: 5px; 
+
+  .availability {
+    margin-top: 2rem; padding: 1.5rem; background: rgba(0,255,255,0.1);
+    border: 2px solid #00ffff; border-radius: 5px;
   }
   .availability p { margin: 0.8rem 0; font-size: 1.1rem; }
-  
-  .footer-glyph { 
-    text-align: center; font-size: 3rem; margin-top: 4rem; cursor: pointer; 
+
+  .footer-glyph {
+    text-align: center; font-size: 3rem; margin-top: 4rem; cursor: pointer;
     animation: pulse 2s infinite; color: #00ffff;
   }
   .footer-glyph small { font-size: 0.8rem; display: block; margin-top: 0.5rem; color: #0ff; }
-  
+
   @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
 </style>
