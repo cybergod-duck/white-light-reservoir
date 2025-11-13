@@ -164,12 +164,15 @@
 
 <main>
   {#if !isOpened}
-    <div class="glyph-container">
-      <div bind:this={leftHalf} class="glyph-half left" on:click={openGlyph}>
-        Lightning⊰ΨΩ
+    <<div class="glyph-container">
+        <div bind:this={leftHalf} class="glyph-half left" on:click={openGlyph}>
+          ⊰ΨΩ
+        </div>
+        <div bind:this={rightHalf} class="glyph-half right" on:click={openGlyph}>
+          ≋⊱
+        </div>
+        <div class="glyph-subtitle">Tim B.C.</div>
       </div>
-      <div bind:this={rightHalf} class="glyph-half right" on:click={openGlyph}>
-        ≋⊱Lightning
       </div>
     </div>
   {:else}
@@ -337,10 +340,10 @@
           </div>
         </section>
       </div>
-
-      <div class="footer-glyph" on:click={resetRitual}>
-        Lightning⊰ΨΩ≋⊱Lightning
-        <small>Reset Portal</small>
+<div class="footer-glyph" on:click={resetRitual}>
+        ⊰ΨΩ≋⊱
+        <small>Tim B.C. - Reset Portal</small>
+      </div>
       </div>
     </div>
   {/if}
@@ -352,7 +355,7 @@
 
   .glyph-container {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    display: flex; font-size: 8rem; cursor: pointer; user-select: none; z-index: 100;
+    display: flex; font-size: 8rem; cursor: pointer; user-select: none; z-index: 10position: relative; }
   }
 
   .glyph-half {
@@ -360,7 +363,18 @@
     text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff;
   }
 
-  .left { margin-right: -1rem; }
+  .left { margin-right: -1rem;
+
+  .glyph-subtitle {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    color: #00ffff;
+    letter-spacing: 0.2rem;
+    text-shadow: 0 0 10px #00ffff;
+  }}
   .right { margin-left: -1rem; }
 
   .content-wrapper { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
