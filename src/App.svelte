@@ -9,10 +9,10 @@
   let particles = [];
   let width, height;
   let activeTab = 'profile';
-  let soundEnabled = true; // Mute toggle
+  let soundEnabled = true;
   let audioCtx;
 
-  // === Tabs ===
+  // === Tabs (icons only) ===
   const tabs = [
     { id: 'profile', label: 'Neural Profile', icon: 'Lightning' },
     { id: 'experience', label: 'Training Data', icon: 'Brain' },
@@ -28,24 +28,21 @@
     }
   }
 
-  // Resume audio context on first user gesture
   function unlockAudio() {
     if (audioCtx && audioCtx.state !== 'running') {
       audioCtx.resume();
     }
   }
 
-  // === SOUND GENERATOR ===
   function playSound(fn) {
     if (!soundEnabled || !audioCtx) return;
     unlockAudio();
     fn(audioCtx);
   }
 
-  // 1. NEURAL UPLINK (Glyph Click)
+  // === SOUNDS ===
   function playUplink() {
     playSound(ctx => {
-      // Sub-bass BOOM
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
@@ -57,7 +54,6 @@
       osc.start();
       osc.stop(ctx.currentTime + 0.8);
 
-      // Glitch chime
       setTimeout(() => {
         const chime = ctx.createOscillator();
         const g = ctx.createGain();
@@ -73,7 +69,6 @@
     });
   }
 
-  // 2. LIGHT FLASH WHOOSH
   function playFlash() {
     playSound(ctx => {
       const noise = ctx.createBufferSource();
@@ -98,7 +93,6 @@
     });
   }
 
-  // 3. UNLOCK CHIME (Content in)
   function playUnlock() {
     playSound(ctx => {
       const osc = ctx.createOscillator();
@@ -114,7 +108,6 @@
     });
   }
 
-  // 4. TAB SWITCH
   function playTabSwitch() {
     playSound(ctx => {
       const click = ctx.createOscillator();
@@ -142,7 +135,6 @@
     });
   }
 
-  // 5. RESET PORTAL
   function playReset() {
     playSound(ctx => {
       const osc = ctx.createOscillator();
@@ -158,7 +150,6 @@
     });
   }
 
-  // 6. AMBIENCE LOOP
   let ambienceNode = null;
   function startAmbience() {
     if (!soundEnabled || ambienceNode) return;
@@ -194,7 +185,6 @@
     }
   }
 
-  // Hover sounds
   function playTick() {
     playSound(ctx => {
       const osc = ctx.createOscillator();
@@ -215,7 +205,7 @@
       const gain = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(80, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtureAtTime(40, ctx.currentTime + 1.5);
+      osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 1.5);
       gain.gain.setValueAtTime(0.6, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2);
       osc.connect(gain).connect(ctx.destination);
@@ -233,10 +223,8 @@
     window.addEventListener('resize', resize);
     animate();
 
-    // Start ambience after first interaction
     document.body.addEventListener('click', startAmbience, { once: true });
 
-    // GSAP hover wiggle
     if (leftHalf && rightHalf) {
       gsap.to([leftHalf, rightHalf], {
         x: () => Math.random() * 6 - 3,
@@ -262,7 +250,7 @@
     stopAmbience();
   });
 
-  // === Canvas & Particles ===
+  // === Canvas ===
   function resize() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
@@ -300,7 +288,6 @@
     if (isOpened) return;
     isOpened = true;
 
-    // Particle burst
     for (let i = 0; i < 60; i++) {
       particles.push({
         x: width / 2,
@@ -351,7 +338,6 @@
     activeTab = tabId;
   }
 
-  // Mute toggle
   function toggleSound() {
     soundEnabled = !soundEnabled;
     if (!soundEnabled) stopAmbience();
@@ -370,10 +356,10 @@
   {#if !isOpened}
     <div class="glyph-container">
       <div bind:this={leftHalf} class="glyph-half left" on:click={openGlyph} on:mouseenter={playTick}>
-        Lightning⊰ΨΩ
+        ⊰ΨΩ
       </div>
       <div bind:this={rightHalf} class="glyph-half right" on:click={openGlyph} on:mouseenter={playTick}>
-        ≋⊱Lightning
+        ≋⊱
       </div>
       <div class="glyph-subtitle">Tim B.C.</div>
     </div>
@@ -389,7 +375,6 @@
         {/each}
       </div>
 
-      <!-- [All your tab content here — same as before] -->
       <!-- NEURAL PROFILE -->
       <div class="tab-content" id="profile" style="display: {activeTab === 'profile' ? 'block' : 'none'}">
         <section class="resume-section">
@@ -402,11 +387,11 @@
         </section>
       </div>
 
-      <!-- [Rest of tabs — unchanged] -->
-      <!-- ... (experience, skills, projects, contact) ... -->
+      <!-- [Other tabs — same as before] -->
+      <!-- TRAINING DATA, SKILLS, PROJECTS, CONTACT — unchanged -->
 
       <div class="footer-glyph" on:click={resetRitual} on:mouseenter={playGong}>
-        Lightning⊰ΨΩ≋⊱Lightning
+        ⊰ΨΩ≋⊱
         <small>Tim B.C. - Reset Portal</small>
       </div>
     </div>
