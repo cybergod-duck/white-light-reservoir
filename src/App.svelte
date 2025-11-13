@@ -252,7 +252,7 @@
           </div>
           <div class="experience-item">
             <h3>Music Producer & Audio Engineer</h3>
-            <p class="date">2018 - Present</p>
+            <p class="date">2005 - Present</p>
             <ul>
               <li>Produced electronic, industrial, and experimental music with focus on sound design and atmosphere</li>
               <li>Expert in DAW operation (BandLab, audio mastering tools), MIDI composition, and audio engineering workflows</li>
